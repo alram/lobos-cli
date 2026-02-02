@@ -32,7 +32,7 @@ const (
 type ControlPlaneClient interface {
 	// S3 User management
 	// Add user adds an S3 user
-	AddUser(ctx context.Context, in *AuthParams, opts ...grpc.CallOption) (*UserReply, error)
+	AddUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*UserReply, error)
 	// ListAllUsers returns a list of all S3 users
 	ListAllUsers(ctx context.Context, in *Filters, opts ...grpc.CallOption) (*ListAllUsersReply, error)
 	// ListUser lists all user's infos
@@ -47,7 +47,7 @@ func NewControlPlaneClient(cc grpc.ClientConnInterface) ControlPlaneClient {
 	return &controlPlaneClient{cc}
 }
 
-func (c *controlPlaneClient) AddUser(ctx context.Context, in *AuthParams, opts ...grpc.CallOption) (*UserReply, error) {
+func (c *controlPlaneClient) AddUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*UserReply, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(UserReply)
 	err := c.cc.Invoke(ctx, ControlPlane_AddUser_FullMethodName, in, out, cOpts...)
@@ -85,7 +85,7 @@ func (c *controlPlaneClient) ListUser(ctx context.Context, in *Name, opts ...grp
 type ControlPlaneServer interface {
 	// S3 User management
 	// Add user adds an S3 user
-	AddUser(context.Context, *AuthParams) (*UserReply, error)
+	AddUser(context.Context, *User) (*UserReply, error)
 	// ListAllUsers returns a list of all S3 users
 	ListAllUsers(context.Context, *Filters) (*ListAllUsersReply, error)
 	// ListUser lists all user's infos
@@ -100,7 +100,7 @@ type ControlPlaneServer interface {
 // pointer dereference when methods are called.
 type UnimplementedControlPlaneServer struct{}
 
-func (UnimplementedControlPlaneServer) AddUser(context.Context, *AuthParams) (*UserReply, error) {
+func (UnimplementedControlPlaneServer) AddUser(context.Context, *User) (*UserReply, error) {
 	return nil, status.Error(codes.Unimplemented, "method AddUser not implemented")
 }
 func (UnimplementedControlPlaneServer) ListAllUsers(context.Context, *Filters) (*ListAllUsersReply, error) {
@@ -131,7 +131,7 @@ func RegisterControlPlaneServer(s grpc.ServiceRegistrar, srv ControlPlaneServer)
 }
 
 func _ControlPlane_AddUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AuthParams)
+	in := new(User)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -143,7 +143,7 @@ func _ControlPlane_AddUser_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: ControlPlane_AddUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ControlPlaneServer).AddUser(ctx, req.(*AuthParams))
+		return srv.(ControlPlaneServer).AddUser(ctx, req.(*User))
 	}
 	return interceptor(ctx, in, info, handler)
 }

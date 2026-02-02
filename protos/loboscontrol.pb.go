@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type AuthParams struct {
+type User struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Key           string                 `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
@@ -31,20 +31,20 @@ type AuthParams struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AuthParams) Reset() {
-	*x = AuthParams{}
+func (x *User) Reset() {
+	*x = User{}
 	mi := &file_loboscontrol_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AuthParams) String() string {
+func (x *User) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AuthParams) ProtoMessage() {}
+func (*User) ProtoMessage() {}
 
-func (x *AuthParams) ProtoReflect() protoreflect.Message {
+func (x *User) ProtoReflect() protoreflect.Message {
 	mi := &file_loboscontrol_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -56,33 +56,33 @@ func (x *AuthParams) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AuthParams.ProtoReflect.Descriptor instead.
-func (*AuthParams) Descriptor() ([]byte, []int) {
+// Deprecated: Use User.ProtoReflect.Descriptor instead.
+func (*User) Descriptor() ([]byte, []int) {
 	return file_loboscontrol_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AuthParams) GetName() string {
+func (x *User) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AuthParams) GetKey() string {
+func (x *User) GetKey() string {
 	if x != nil {
 		return x.Key
 	}
 	return ""
 }
 
-func (x *AuthParams) GetSecret() string {
+func (x *User) GetSecret() string {
 	if x != nil {
 		return x.Secret
 	}
 	return ""
 }
 
-func (x *AuthParams) GetBackend() string {
+func (x *User) GetBackend() string {
 	if x != nil {
 		return x.Backend
 	}
@@ -223,7 +223,7 @@ func (x *ListAllUsersReply) GetUsers() []*UserReply {
 
 type UserReply struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Params        *AuthParams            `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
+	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -258,9 +258,9 @@ func (*UserReply) Descriptor() ([]byte, []int) {
 	return file_loboscontrol_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *UserReply) GetParams() *AuthParams {
+func (x *UserReply) GetUser() *User {
 	if x != nil {
-		return x.Params
+		return x.User
 	}
 	return nil
 }
@@ -269,9 +269,8 @@ var File_loboscontrol_proto protoreflect.FileDescriptor
 
 const file_loboscontrol_proto_rawDesc = "" +
 	"\n" +
-	"\x12loboscontrol.proto\x12\floboscontrol\"d\n" +
-	"\n" +
-	"AuthParams\x12\x12\n" +
+	"\x12loboscontrol.proto\x12\floboscontrol\"^\n" +
+	"\x04User\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x10\n" +
 	"\x03key\x18\x02 \x01(\tR\x03key\x12\x16\n" +
 	"\x06secret\x18\x03 \x01(\tR\x06secret\x12\x18\n" +
@@ -281,11 +280,11 @@ const file_loboscontrol_proto_rawDesc = "" +
 	"\x04Name\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\"B\n" +
 	"\x11ListAllUsersReply\x12-\n" +
-	"\x05users\x18\x01 \x03(\v2\x17.loboscontrol.UserReplyR\x05users\"=\n" +
-	"\tUserReply\x120\n" +
-	"\x06params\x18\x01 \x01(\v2\x18.loboscontrol.AuthParamsR\x06params2\xd3\x01\n" +
-	"\fControlPlane\x12>\n" +
-	"\aAddUser\x12\x18.loboscontrol.AuthParams\x1a\x17.loboscontrol.UserReply\"\x00\x12H\n" +
+	"\x05users\x18\x01 \x03(\v2\x17.loboscontrol.UserReplyR\x05users\"3\n" +
+	"\tUserReply\x12&\n" +
+	"\x04user\x18\x01 \x01(\v2\x12.loboscontrol.UserR\x04user2\xcd\x01\n" +
+	"\fControlPlane\x128\n" +
+	"\aAddUser\x12\x12.loboscontrol.User\x1a\x17.loboscontrol.UserReply\"\x00\x12H\n" +
 	"\fListAllUsers\x12\x15.loboscontrol.Filters\x1a\x1f.loboscontrol.ListAllUsersReply\"\x00\x129\n" +
 	"\bListUser\x12\x12.loboscontrol.Name\x1a\x17.loboscontrol.UserReply\"\x00B\x14Z\x12lobos/controlplaneb\x06proto3"
 
@@ -303,7 +302,7 @@ func file_loboscontrol_proto_rawDescGZIP() []byte {
 
 var file_loboscontrol_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_loboscontrol_proto_goTypes = []any{
-	(*AuthParams)(nil),        // 0: loboscontrol.AuthParams
+	(*User)(nil),              // 0: loboscontrol.User
 	(*Filters)(nil),           // 1: loboscontrol.Filters
 	(*Name)(nil),              // 2: loboscontrol.Name
 	(*ListAllUsersReply)(nil), // 3: loboscontrol.ListAllUsersReply
@@ -311,8 +310,8 @@ var file_loboscontrol_proto_goTypes = []any{
 }
 var file_loboscontrol_proto_depIdxs = []int32{
 	4, // 0: loboscontrol.ListAllUsersReply.users:type_name -> loboscontrol.UserReply
-	0, // 1: loboscontrol.UserReply.params:type_name -> loboscontrol.AuthParams
-	0, // 2: loboscontrol.ControlPlane.AddUser:input_type -> loboscontrol.AuthParams
+	0, // 1: loboscontrol.UserReply.user:type_name -> loboscontrol.User
+	0, // 2: loboscontrol.ControlPlane.AddUser:input_type -> loboscontrol.User
 	1, // 3: loboscontrol.ControlPlane.ListAllUsers:input_type -> loboscontrol.Filters
 	2, // 4: loboscontrol.ControlPlane.ListUser:input_type -> loboscontrol.Name
 	4, // 5: loboscontrol.ControlPlane.AddUser:output_type -> loboscontrol.UserReply

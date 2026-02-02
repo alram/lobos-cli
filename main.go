@@ -82,7 +82,7 @@ func main() {
 						Usage: "Adds an user",
 						Flags: fullUsersFlags,
 						Action: func(ctx context.Context, cmd *cli.Command) error {
-							r, err := client.AddUser(ctx, &pb.AuthParams{
+							r, err := client.AddUser(ctx, &pb.User{
 								Name:   cmd.String("name"),
 								Key:    cmd.String("access"),
 								Secret: cmd.String("secret"),
@@ -91,7 +91,7 @@ func main() {
 								log.Fatalf("could not add user: %v", err)
 							}
 
-							fmt.Printf("User %s created. Access: %s, secret: %s\n", r.Params.Name, r.Params.Key, r.Params.Secret)
+							fmt.Printf("User %s created. Access: %s, secret: %s\n", r.User.Name, r.User.Key, r.User.Secret)
 
 							return nil
 						},
@@ -105,7 +105,7 @@ func main() {
 								log.Fatalf("Could not list all users: %v", err)
 							}
 							for _, u := range r.Users {
-								fmt.Printf("user: %s - key: %s - secret: %s\n", u.Params.Name, u.Params.Key, u.Params.Secret)
+								fmt.Printf("user: %s - key: %s - secret: %s\n", u.User.Name, u.User.Key, u.User.Secret)
 							}
 							return nil
 						},

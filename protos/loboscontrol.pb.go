@@ -9,6 +9,7 @@ package controlplane
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -20,6 +21,58 @@ const (
 	// Verify that runtime/protoimpl is sufficiently up-to-date.
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
+
+type RmUserParams struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Force         bool                   `protobuf:"varint,2,opt,name=force,proto3" json:"force,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RmUserParams) Reset() {
+	*x = RmUserParams{}
+	mi := &file_loboscontrol_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RmUserParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RmUserParams) ProtoMessage() {}
+
+func (x *RmUserParams) ProtoReflect() protoreflect.Message {
+	mi := &file_loboscontrol_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RmUserParams.ProtoReflect.Descriptor instead.
+func (*RmUserParams) Descriptor() ([]byte, []int) {
+	return file_loboscontrol_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *RmUserParams) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *RmUserParams) GetForce() bool {
+	if x != nil {
+		return x.Force
+	}
+	return false
+}
 
 type User struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -33,7 +86,7 @@ type User struct {
 
 func (x *User) Reset() {
 	*x = User{}
-	mi := &file_loboscontrol_proto_msgTypes[0]
+	mi := &file_loboscontrol_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -45,7 +98,7 @@ func (x *User) String() string {
 func (*User) ProtoMessage() {}
 
 func (x *User) ProtoReflect() protoreflect.Message {
-	mi := &file_loboscontrol_proto_msgTypes[0]
+	mi := &file_loboscontrol_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -58,7 +111,7 @@ func (x *User) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use User.ProtoReflect.Descriptor instead.
 func (*User) Descriptor() ([]byte, []int) {
-	return file_loboscontrol_proto_rawDescGZIP(), []int{0}
+	return file_loboscontrol_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *User) GetName() string {
@@ -98,7 +151,7 @@ type Filters struct {
 
 func (x *Filters) Reset() {
 	*x = Filters{}
-	mi := &file_loboscontrol_proto_msgTypes[1]
+	mi := &file_loboscontrol_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -110,7 +163,7 @@ func (x *Filters) String() string {
 func (*Filters) ProtoMessage() {}
 
 func (x *Filters) ProtoReflect() protoreflect.Message {
-	mi := &file_loboscontrol_proto_msgTypes[1]
+	mi := &file_loboscontrol_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -123,56 +176,12 @@ func (x *Filters) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Filters.ProtoReflect.Descriptor instead.
 func (*Filters) Descriptor() ([]byte, []int) {
-	return file_loboscontrol_proto_rawDescGZIP(), []int{1}
+	return file_loboscontrol_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Filters) GetMessage() string {
 	if x != nil {
 		return x.Message
-	}
-	return ""
-}
-
-type Name struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Name) Reset() {
-	*x = Name{}
-	mi := &file_loboscontrol_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Name) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Name) ProtoMessage() {}
-
-func (x *Name) ProtoReflect() protoreflect.Message {
-	mi := &file_loboscontrol_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Name.ProtoReflect.Descriptor instead.
-func (*Name) Descriptor() ([]byte, []int) {
-	return file_loboscontrol_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *Name) GetName() string {
-	if x != nil {
-		return x.Name
 	}
 	return ""
 }
@@ -269,24 +278,27 @@ var File_loboscontrol_proto protoreflect.FileDescriptor
 
 const file_loboscontrol_proto_rawDesc = "" +
 	"\n" +
-	"\x12loboscontrol.proto\x12\floboscontrol\"^\n" +
+	"\x12loboscontrol.proto\x12\floboscontrol\x1a\x1egoogle/protobuf/wrappers.proto\"8\n" +
+	"\fRmUserParams\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
+	"\x05force\x18\x02 \x01(\bR\x05force\"^\n" +
 	"\x04User\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x10\n" +
 	"\x03key\x18\x02 \x01(\tR\x03key\x12\x16\n" +
 	"\x06secret\x18\x03 \x01(\tR\x06secret\x12\x18\n" +
 	"\abackend\x18\x04 \x01(\tR\abackend\"#\n" +
 	"\aFilters\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"\x1a\n" +
-	"\x04Name\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\"B\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"B\n" +
 	"\x11ListAllUsersReply\x12-\n" +
 	"\x05users\x18\x01 \x03(\v2\x17.loboscontrol.UserReplyR\x05users\"3\n" +
 	"\tUserReply\x12&\n" +
-	"\x04user\x18\x01 \x01(\v2\x12.loboscontrol.UserR\x04user2\xcd\x01\n" +
+	"\x04user\x18\x01 \x01(\v2\x12.loboscontrol.UserR\x04user2\xca\x02\n" +
 	"\fControlPlane\x128\n" +
 	"\aAddUser\x12\x12.loboscontrol.User\x1a\x17.loboscontrol.UserReply\"\x00\x12H\n" +
-	"\fListAllUsers\x12\x15.loboscontrol.Filters\x1a\x1f.loboscontrol.ListAllUsersReply\"\x00\x129\n" +
-	"\bListUser\x12\x12.loboscontrol.Name\x1a\x17.loboscontrol.UserReply\"\x00B\x14Z\x12lobos/controlplaneb\x06proto3"
+	"\fListAllUsers\x12\x15.loboscontrol.Filters\x1a\x1f.loboscontrol.ListAllUsersReply\"\x00\x12B\n" +
+	"\x06RmUser\x12\x1a.loboscontrol.RmUserParams\x1a\x1a.google.protobuf.BoolValue\"\x00\x127\n" +
+	"\x06AddKey\x12\x12.loboscontrol.User\x1a\x17.loboscontrol.UserReply\"\x00\x129\n" +
+	"\x05RmKey\x12\x12.loboscontrol.User\x1a\x1a.google.protobuf.BoolValue\"\x00B\x14Z\x12lobos/controlplaneb\x06proto3"
 
 var (
 	file_loboscontrol_proto_rawDescOnce sync.Once
@@ -302,23 +314,28 @@ func file_loboscontrol_proto_rawDescGZIP() []byte {
 
 var file_loboscontrol_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_loboscontrol_proto_goTypes = []any{
-	(*User)(nil),              // 0: loboscontrol.User
-	(*Filters)(nil),           // 1: loboscontrol.Filters
-	(*Name)(nil),              // 2: loboscontrol.Name
-	(*ListAllUsersReply)(nil), // 3: loboscontrol.ListAllUsersReply
-	(*UserReply)(nil),         // 4: loboscontrol.UserReply
+	(*RmUserParams)(nil),         // 0: loboscontrol.RmUserParams
+	(*User)(nil),                 // 1: loboscontrol.User
+	(*Filters)(nil),              // 2: loboscontrol.Filters
+	(*ListAllUsersReply)(nil),    // 3: loboscontrol.ListAllUsersReply
+	(*UserReply)(nil),            // 4: loboscontrol.UserReply
+	(*wrapperspb.BoolValue)(nil), // 5: google.protobuf.BoolValue
 }
 var file_loboscontrol_proto_depIdxs = []int32{
 	4, // 0: loboscontrol.ListAllUsersReply.users:type_name -> loboscontrol.UserReply
-	0, // 1: loboscontrol.UserReply.user:type_name -> loboscontrol.User
-	0, // 2: loboscontrol.ControlPlane.AddUser:input_type -> loboscontrol.User
-	1, // 3: loboscontrol.ControlPlane.ListAllUsers:input_type -> loboscontrol.Filters
-	2, // 4: loboscontrol.ControlPlane.ListUser:input_type -> loboscontrol.Name
-	4, // 5: loboscontrol.ControlPlane.AddUser:output_type -> loboscontrol.UserReply
-	3, // 6: loboscontrol.ControlPlane.ListAllUsers:output_type -> loboscontrol.ListAllUsersReply
-	4, // 7: loboscontrol.ControlPlane.ListUser:output_type -> loboscontrol.UserReply
-	5, // [5:8] is the sub-list for method output_type
-	2, // [2:5] is the sub-list for method input_type
+	1, // 1: loboscontrol.UserReply.user:type_name -> loboscontrol.User
+	1, // 2: loboscontrol.ControlPlane.AddUser:input_type -> loboscontrol.User
+	2, // 3: loboscontrol.ControlPlane.ListAllUsers:input_type -> loboscontrol.Filters
+	0, // 4: loboscontrol.ControlPlane.RmUser:input_type -> loboscontrol.RmUserParams
+	1, // 5: loboscontrol.ControlPlane.AddKey:input_type -> loboscontrol.User
+	1, // 6: loboscontrol.ControlPlane.RmKey:input_type -> loboscontrol.User
+	4, // 7: loboscontrol.ControlPlane.AddUser:output_type -> loboscontrol.UserReply
+	3, // 8: loboscontrol.ControlPlane.ListAllUsers:output_type -> loboscontrol.ListAllUsersReply
+	5, // 9: loboscontrol.ControlPlane.RmUser:output_type -> google.protobuf.BoolValue
+	4, // 10: loboscontrol.ControlPlane.AddKey:output_type -> loboscontrol.UserReply
+	5, // 11: loboscontrol.ControlPlane.RmKey:output_type -> google.protobuf.BoolValue
+	7, // [7:12] is the sub-list for method output_type
+	2, // [2:7] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name

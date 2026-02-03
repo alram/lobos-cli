@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -21,7 +22,9 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	ControlPlane_AddUser_FullMethodName      = "/loboscontrol.ControlPlane/AddUser"
 	ControlPlane_ListAllUsers_FullMethodName = "/loboscontrol.ControlPlane/ListAllUsers"
-	ControlPlane_ListUser_FullMethodName     = "/loboscontrol.ControlPlane/ListUser"
+	ControlPlane_RmUser_FullMethodName       = "/loboscontrol.ControlPlane/RmUser"
+	ControlPlane_AddKey_FullMethodName       = "/loboscontrol.ControlPlane/AddKey"
+	ControlPlane_RmKey_FullMethodName        = "/loboscontrol.ControlPlane/RmKey"
 )
 
 // ControlPlaneClient is the client API for ControlPlane service.
@@ -35,8 +38,12 @@ type ControlPlaneClient interface {
 	AddUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*UserReply, error)
 	// ListAllUsers returns a list of all S3 users
 	ListAllUsers(ctx context.Context, in *Filters, opts ...grpc.CallOption) (*ListAllUsersReply, error)
-	// ListUser lists all user's infos
-	ListUser(ctx context.Context, in *Name, opts ...grpc.CallOption) (*UserReply, error)
+	// RmUser removes an user
+	RmUser(ctx context.Context, in *RmUserParams, opts ...grpc.CallOption) (*wrapperspb.BoolValue, error)
+	// AddKey adds a key to specified user
+	AddKey(ctx context.Context, in *User, opts ...grpc.CallOption) (*UserReply, error)
+	// RmKey removes a key from a specified user
+	RmKey(ctx context.Context, in *User, opts ...grpc.CallOption) (*wrapperspb.BoolValue, error)
 }
 
 type controlPlaneClient struct {
@@ -67,10 +74,30 @@ func (c *controlPlaneClient) ListAllUsers(ctx context.Context, in *Filters, opts
 	return out, nil
 }
 
-func (c *controlPlaneClient) ListUser(ctx context.Context, in *Name, opts ...grpc.CallOption) (*UserReply, error) {
+func (c *controlPlaneClient) RmUser(ctx context.Context, in *RmUserParams, opts ...grpc.CallOption) (*wrapperspb.BoolValue, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(wrapperspb.BoolValue)
+	err := c.cc.Invoke(ctx, ControlPlane_RmUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *controlPlaneClient) AddKey(ctx context.Context, in *User, opts ...grpc.CallOption) (*UserReply, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(UserReply)
-	err := c.cc.Invoke(ctx, ControlPlane_ListUser_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ControlPlane_AddKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *controlPlaneClient) RmKey(ctx context.Context, in *User, opts ...grpc.CallOption) (*wrapperspb.BoolValue, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(wrapperspb.BoolValue)
+	err := c.cc.Invoke(ctx, ControlPlane_RmKey_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -88,8 +115,12 @@ type ControlPlaneServer interface {
 	AddUser(context.Context, *User) (*UserReply, error)
 	// ListAllUsers returns a list of all S3 users
 	ListAllUsers(context.Context, *Filters) (*ListAllUsersReply, error)
-	// ListUser lists all user's infos
-	ListUser(context.Context, *Name) (*UserReply, error)
+	// RmUser removes an user
+	RmUser(context.Context, *RmUserParams) (*wrapperspb.BoolValue, error)
+	// AddKey adds a key to specified user
+	AddKey(context.Context, *User) (*UserReply, error)
+	// RmKey removes a key from a specified user
+	RmKey(context.Context, *User) (*wrapperspb.BoolValue, error)
 	mustEmbedUnimplementedControlPlaneServer()
 }
 
@@ -106,8 +137,14 @@ func (UnimplementedControlPlaneServer) AddUser(context.Context, *User) (*UserRep
 func (UnimplementedControlPlaneServer) ListAllUsers(context.Context, *Filters) (*ListAllUsersReply, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListAllUsers not implemented")
 }
-func (UnimplementedControlPlaneServer) ListUser(context.Context, *Name) (*UserReply, error) {
-	return nil, status.Error(codes.Unimplemented, "method ListUser not implemented")
+func (UnimplementedControlPlaneServer) RmUser(context.Context, *RmUserParams) (*wrapperspb.BoolValue, error) {
+	return nil, status.Error(codes.Unimplemented, "method RmUser not implemented")
+}
+func (UnimplementedControlPlaneServer) AddKey(context.Context, *User) (*UserReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method AddKey not implemented")
+}
+func (UnimplementedControlPlaneServer) RmKey(context.Context, *User) (*wrapperspb.BoolValue, error) {
+	return nil, status.Error(codes.Unimplemented, "method RmKey not implemented")
 }
 func (UnimplementedControlPlaneServer) mustEmbedUnimplementedControlPlaneServer() {}
 func (UnimplementedControlPlaneServer) testEmbeddedByValue()                      {}
@@ -166,20 +203,56 @@ func _ControlPlane_ListAllUsers_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ControlPlane_ListUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Name)
+func _ControlPlane_RmUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RmUserParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ControlPlaneServer).ListUser(ctx, in)
+		return srv.(ControlPlaneServer).RmUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ControlPlane_ListUser_FullMethodName,
+		FullMethod: ControlPlane_RmUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ControlPlaneServer).ListUser(ctx, req.(*Name))
+		return srv.(ControlPlaneServer).RmUser(ctx, req.(*RmUserParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ControlPlane_AddKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(User)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ControlPlaneServer).AddKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ControlPlane_AddKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ControlPlaneServer).AddKey(ctx, req.(*User))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ControlPlane_RmKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(User)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ControlPlaneServer).RmKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ControlPlane_RmKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ControlPlaneServer).RmKey(ctx, req.(*User))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -200,8 +273,16 @@ var ControlPlane_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ControlPlane_ListAllUsers_Handler,
 		},
 		{
-			MethodName: "ListUser",
-			Handler:    _ControlPlane_ListUser_Handler,
+			MethodName: "RmUser",
+			Handler:    _ControlPlane_RmUser_Handler,
+		},
+		{
+			MethodName: "AddKey",
+			Handler:    _ControlPlane_AddKey_Handler,
+		},
+		{
+			MethodName: "RmKey",
+			Handler:    _ControlPlane_RmKey_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

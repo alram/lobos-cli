@@ -22,29 +22,42 @@ var (
 			Value: "127.0.0.1:50051",
 		},
 	}
-	nameFlag = []cli.Flag{
-		&cli.StringFlag{
-			Name:     "name",
-			Usage:    "name of the new user",
-			Required: true,
-		},
+	nameFlag = &cli.StringFlag{
+		Name:     "name",
+		Usage:    "name of the new resource",
+		Required: true,
 	}
-	fullUsersFlags = []cli.Flag{
-		&cli.StringFlag{
-			Name:     "name",
-			Usage:    "name of the new user",
-			Required: true,
-		},
-		&cli.StringFlag{
-			Name:     "access",
-			Usage:    "S3 access key",
-			Required: false,
-		},
-		&cli.StringFlag{
-			Name:     "secret",
-			Usage:    "S3 secret",
-			Required: false,
-		},
+	forceFlag = &cli.BoolFlag{
+		Name: "force",
+	}
+	accessKeyFlag = &cli.StringFlag{
+		Name:     "access-key",
+		Usage:    "S3 access key",
+		Required: false,
+	}
+	accessKeyReqFlag = &cli.StringFlag{
+		Name:     "access-key",
+		Usage:    "S3 access key",
+		Required: true,
+	}
+	secretFlag = &cli.StringFlag{
+		Name:     "secret",
+		Usage:    "S3 secret",
+		Required: false,
+	}
+
+	rmUserFlags = []cli.Flag{
+		nameFlag,
+		forceFlag,
+	}
+	userFlags = []cli.Flag{
+		nameFlag,
+		accessKeyFlag,
+		secretFlag,
+	}
+	keyRmFlags = []cli.Flag{
+		nameFlag,
+		accessKeyReqFlag,
 	}
 )
 
@@ -54,7 +67,6 @@ var (
 )
 
 func main() {
-
 	cmd := &cli.Command{
 		Name:  "lobosctl",
 		Usage: "Interact with lobos control plane",
@@ -80,11 +92,11 @@ func main() {
 					{
 						Name:  "add",
 						Usage: "Adds an user",
-						Flags: fullUsersFlags,
+						Flags: userFlags,
 						Action: func(ctx context.Context, cmd *cli.Command) error {
 							r, err := client.AddUser(ctx, &pb.User{
 								Name:   cmd.String("name"),
-								Key:    cmd.String("access"),
+								Key:    cmd.String("access-key"),
 								Secret: cmd.String("secret"),
 							})
 							if err != nil {
@@ -106,6 +118,61 @@ func main() {
 							}
 							for _, u := range r.Users {
 								fmt.Printf("user: %s - key: %s - secret: %s\n", u.User.Name, u.User.Key, u.User.Secret)
+							}
+							return nil
+						},
+					},
+					{
+						Name:  "rm",
+						Usage: "Remove an user",
+						Flags: rmUserFlags,
+						Action: func(ctx context.Context, cmd *cli.Command) error {
+							_, err := client.RmUser(ctx, &pb.RmUserParams{
+								Name:  cmd.String("name"),
+								Force: cmd.Bool("force"),
+							})
+							if err != nil {
+								log.Fatalf("Could not list all users: %v", err)
+							}
+							return nil
+						},
+					},
+				},
+			},
+			{
+				Name:  "keys",
+				Usage: "Add/Remove S3 access",
+				Commands: []*cli.Command{
+					{
+						Name:  "add",
+						Usage: "Adds an S3 access",
+						Flags: userFlags,
+						Action: func(ctx context.Context, cmd *cli.Command) error {
+							r, err := client.AddKey(ctx, &pb.User{
+								Name:   cmd.String("name"),
+								Key:    cmd.String("access-key"),
+								Secret: cmd.String("secret"),
+							})
+							if err != nil {
+								log.Fatalf("could not add user: %v", err)
+							}
+
+							fmt.Printf("Access: %s, secret: %s\n", r.User.Key, r.User.Secret)
+
+							return nil
+						},
+					},
+					{
+						Name:  "rm",
+						Usage: "Removes an S3 access",
+						Flags: keyRmFlags,
+						Action: func(ctx context.Context, cmd *cli.Command) error {
+							_, err := client.RmKey(ctx, &pb.User{
+								Name: cmd.String("name"),
+								Key:  cmd.String("access-key"),
+							})
+							if err != nil {
+								log.Fatalf("could not add user: %v", err)
 							}
 							return nil
 						},
